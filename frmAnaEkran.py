@@ -2,17 +2,11 @@ import customtkinter as ctk
 import Fonksiyonlar.GenelFonksiyonlar as gf
 import frmUye
 import frmKullanicilar
-
+import frmYazarlar
+import frmKitaplar
 
 class AnaEkran(ctk.CTkToplevel):
     def __init__(self, master=None):
-
-        def FormUyeAc():
-            frmUye.Uye(self).grab_set()
-        
-        def FormKullanicilarAc():
-            frmKullanicilar.Kullanicilar(self).grab_set()
-
         super().__init__(master)
         ctk.set_default_color_theme("green")
         gf.CenterWindow(self, 400, 300)
@@ -21,13 +15,26 @@ class AnaEkran(ctk.CTkToplevel):
         # Pencere kapatıldığında Programı kapat
         self.protocol("WM_DELETE_WINDOW", self.on_close)
 
+        def FormUyeAc():
+            frmUye.Uye(self).grab_set()
+        
+        def FormKullanicilarAc():
+            frmKullanicilar.Kullanicilar(self).grab_set()
+
+        def FormYazarlarAc():
+            frmYazarlar.Yazarlar(self).grab_set()
+
+        def FormKitaplarAc():
+            frmKitaplar.Kitaplar(self).grab_set()
+
         # Arayüz elemanları
         ctk.CTkLabel(
             self, text=f"Hoş Geldiniz Sayın {gf.kullaniciAdi}", font=("Arial", 16)
         ).pack(pady=20)
         ctk.CTkButton(self, text="Kullanıcı İşlemleri", command=lambda: FormKullanicilarAc()).pack(pady=10)
         ctk.CTkButton(self, text="Üye İşlemleri", command=lambda: FormUyeAc()).pack(pady=10)
-        ctk.CTkButton(self, text="Kitap İşlemleri").pack(pady=10)
+        ctk.CTkButton(self, text="Yazar İşlemleri", command= lambda: FormYazarlarAc()).pack(pady=10)
+        ctk.CTkButton(self, text="Kitap İşlemleri", command=lambda: FormKitaplarAc()).pack(pady=10)
         ctk.CTkButton(self, text="Çıkış", command=self.quit).pack(pady=10)
 
     def on_close(self):

@@ -19,18 +19,7 @@ class Uye(ctk.CTkToplevel):
             try:
                 tw_Uyeler.delete(*tw_Uyeler.get_children())
                 data = vt.UyeListesi()
-                for uye in data:
-                    tw_Uyeler.insert(
-                        "",
-                        "end",
-                        values=(
-                            uye[0],
-                            uye[1],
-                            uye[2],
-                            uye[3],
-                            uye[4],
-                        ),
-                    )
+                gf.PopulateTreeview(tw_Uyeler, data)
             except Exception as e:
                 mb.showerror("Hata", f"Üye listesi alınırken hata oluştu: {str(e)}")
 

@@ -11,24 +11,13 @@ class Kullanicilar(ctk.CTkToplevel):
         super().__init__(master)
         ctk.set_default_color_theme("green")
         gf.CenterWindow(self, 650, 600)
-        self.title("Üye İşlemleri")
+        self.title("Kullanıcı İşlemleri")
 
         def Listele():
             try:
                 tw_Kullanicilar.delete(*tw_Kullanicilar.get_children())
                 data = vt.KullaniciListesi()
-                for kullanici in data:
-                    tw_Kullanicilar.insert(
-                        "",
-                        "end",
-                        values=(
-                            kullanici[0],
-                            kullanici[1],
-                            kullanici[2],
-                            kullanici[3],
-                            kullanici[4],
-                        ),
-                    )
+                gf.PopulateTreeview(tw_Kullanicilar, data)
             except Exception as e:
                 mb.showerror("Hata", f"Üye listesi alınırken hata oluştu: {str(e)}")
 

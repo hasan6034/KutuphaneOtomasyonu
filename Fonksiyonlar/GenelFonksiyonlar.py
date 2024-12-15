@@ -13,4 +13,4 @@ kullaniciAdi = ""
 
 def PopulateTreeview(tree, data):
     for row in data:
-        tree.insert("", "end", values=row)
+        tree.insert("", "end", values=list(row))
