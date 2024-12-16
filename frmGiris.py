@@ -47,6 +47,8 @@ user_entry.pack(pady=12, padx=10)
 user_pass = ctk.CTkEntry(master=frame, placeholder_text="Şifre", show="*")
 user_pass.pack(pady=12, padx=10)
 
+user_entry.insert(0, "hasan")
+user_pass.insert(0, "1234")
 
 button = ctk.CTkButton(
     master=frame,

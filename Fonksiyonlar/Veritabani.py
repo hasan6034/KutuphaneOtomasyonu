@@ -18,12 +18,14 @@ YAYINCI_LISTESI = "Select * from YayinciListesi()"
 YAZAR_LISTESI = "Select * from YazarListesi()"
 
 KITAP_EKLE_GUNCELLE = "exec KitapEkleGuncelle @KitapID = ?, @KitapAdi = ?, @YazarID = ?, @YayinciID = ?, @KategoriID = ?, @BasimYili = ?, @SayfaSayisi = ?, @StokAdedi = ?"
+KATEGORI_EKLE_GUNCELLE = "exec KategoriEkleGuncelle @KategoriID = ?, @KategoriAdi = ?"
 KULLANICI_EKLE_GUNCELLE = "exec KullaniciEkleGuncelle @KullaniciID = ?, @Adi = ?, @Soyadi = ?, @Email = ?, @Sifre = ?"
 ODUNC_EKLE_GUNCELLE = "exec OduncEkleGuncelle @OduncID = ?, @KitapID = ?, @UyeID = ?, @VerilisTarihi = ?, @TeslimTarihi = ?"
 UYE_EKLE_GUNCELLE = "exec UyeEkleGuncelle @UyeID = ?, @Adi = ?, @Telefon = ?, @Adres = ?, @KayitTarihi = ?"
 YAYINCI_EKLE_GUNCELLE = "exec YayinciEkleGuncelle @YayinciID = ?, @YayinciAdi = ?, @Adres = ?"
 YAZAR_EKLE_GUNCELLE = "exec YazarEkleGuncelle @YazarID = ?, @YazarAdi = ?, @DogumTarihi = ?"
 
+KATEGORI_SIL = "exec KategoriSil @KategoriID = ?"
 KITAP_SIL = "exec KitapSil @KitapID = ?"
 KULLANICI_SIL = "exec KullaniciSil @KullaniciID = ?"
 ODUNC_SIL = "exec OduncSil @OduncID = ?"
@@ -74,6 +76,10 @@ def YazarListesi():
 
 
 # ..: Ekleme ve Güncelleme :..
+def KategoriEkleGuncelle(kategoriID, kategoriAdi):
+    cursor.execute(KATEGORI_EKLE_GUNCELLE, kategoriID, kategoriAdi)
+    conn.commit()
+
 def KitapEkleGuncelle(kitapID, kitapAdi, yazarID, yayinciID, kategoriID, basimTarihi, sayfaSayisi, stokAdedi):
     cursor.execute(KITAP_EKLE_GUNCELLE, kitapID, kitapAdi, yazarID, yayinciID, kategoriID, basimTarihi, sayfaSayisi, stokAdedi)
     conn.commit()
@@ -101,6 +107,10 @@ def YazarEkleGuncelle(yazarID, adi, soyadi):
 
 
 # ..: Silme :..
+def KategoriSil(kategoriID):
+    cursor.execute(KATEGORI_SIL, kategoriID)
+    conn.commit()
+
 def KitapSil(kitapID):
     cursor.execute(KITAP_SIL, kitapID)
     conn.commit()

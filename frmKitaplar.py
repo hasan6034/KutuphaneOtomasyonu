@@ -15,13 +15,13 @@ class Kitaplar(ctk.CTkToplevel):
         self.title("Kitap İşlemleri")
 
         dataYazar = vt.YazarListesi()
-        dataYazar.append((-1, "Seçiniz"))
+        dataYazar.insert(0, (-1, "Seçiniz")) # İlk sıraya "Seçiniz" ekle
 
         dataYayinci = vt.YayinciListesi()
-        dataYayinci.append((-1, "Seçiniz"))
+        dataYayinci.insert(0, (-1, "Seçiniz")) # İlk sıraya "Seçiniz" ekle
 
         dataKategori = vt.KategoriListesi()
-        dataKategori.append((-1, "Seçiniz"))
+        dataKategori.insert(0, (-1, "Seçiniz")) # İlk sıraya "Seçiniz" ekle
 
         displayYazar = [row[1] for row in dataYazar] # Yazar Adını al
         displayYayinci = [row[1] for row in dataYayinci] # Yayıncı Adını al
@@ -49,9 +49,7 @@ class Kitaplar(ctk.CTkToplevel):
             cmb2.set("Seçiniz")
             cmb3.set("Seçiniz")
             
-
         def Kaydet():
-            print(valueYazar.get(txtYazarAdi.get()))
             try:
                 if txtKitapAdi.get() == "" or txtYazarAdi.get() == "Seçiniz" or txtYayinciAdi.get() == "Seçiniz" or txtKategoriAdi.get() == "Seçiniz" or txtBasimTarihi.get() == "" or txtSayfaSayisi.get() == "" or txtStokAdedi.get() == "":
                     mb.showwarning("Uyarı", "Lütfen tüm alanları doldurunuz!")
@@ -72,15 +70,18 @@ class Kitaplar(ctk.CTkToplevel):
                 mb.showerror("Hata", f"Kayıt sırasında hata oluştu: {str(e)}")
 
         def Sil():
-                if txtKitapID.get() == "-1":
-                    mb.showwarning("Uyarı", "Lütfen bir üye seçiniz.")
-                    return
-                if not mb.askyesno("Onay", "Bu üyeyi silmek istediğinizden emin misiniz?"):
-                    return
-                vt.KitapSil(txtKitapID.get())
-                Listele()
-                YeniKayit()
-                mb.showinfo("Bilgi","Üye başarıyla silindi")
+                try:
+                    if txtKitapID.get() == "-1":
+                        mb.showwarning("Uyarı", "Lütfen bir üye seçiniz.")
+                        return
+                    if not mb.askyesno("Onay", "Bu üyeyi silmek istediğinizden emin misiniz?"):
+                        return
+                    vt.KitapSil(txtKitapID.get())
+                    Listele()
+                    YeniKayit()
+                    mb.showinfo("Bilgi","Üye başarıyla silindi")
+                except Exception as e:
+                    mb.showerror("Hata", f"Üye silinirken hata oluştu: {str(e)}")
 
         tw_Kitaplar = ttk.Treeview(
             self,

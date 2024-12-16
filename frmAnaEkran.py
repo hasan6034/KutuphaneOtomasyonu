@@ -4,12 +4,15 @@ import frmUye
 import frmKullanicilar
 import frmYazarlar
 import frmKitaplar
+import frmYayincilar
+import frmKategoriler
+import frmOdunc
 
 class AnaEkran(ctk.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)
         ctk.set_default_color_theme("green")
-        gf.CenterWindow(self, 400, 300)
+        gf.CenterWindow(self, 500, 600)
         self.title("Ana Ekran")
 
         # Pencere kapatıldığında Programı kapat
@@ -27,6 +30,15 @@ class AnaEkran(ctk.CTkToplevel):
         def FormKitaplarAc():
             frmKitaplar.Kitaplar(self).grab_set()
 
+        def FormYayincilarAc():
+            frmYayincilar.Yayincilar(self).grab_set()
+
+        def FormKategorilerAc():
+            frmKategoriler.Kategoriler(self).grab_set()
+
+        def FormOduncAc():
+            frmOdunc.Odunc(self).grab_set()
+
         # Arayüz elemanları
         ctk.CTkLabel(
             self, text=f"Hoş Geldiniz Sayın {gf.kullaniciAdi}", font=("Arial", 16)
@@ -35,6 +47,9 @@ class AnaEkran(ctk.CTkToplevel):
         ctk.CTkButton(self, text="Üye İşlemleri", command=lambda: FormUyeAc()).pack(pady=10)
         ctk.CTkButton(self, text="Yazar İşlemleri", command= lambda: FormYazarlarAc()).pack(pady=10)
         ctk.CTkButton(self, text="Kitap İşlemleri", command=lambda: FormKitaplarAc()).pack(pady=10)
+        ctk.CTkButton(self, text="Yayıncı İşlemleri", command=lambda: FormYayincilarAc()).pack(pady=10)
+        ctk.CTkButton(self, text="Kategori İşlemleri", command=lambda: FormKategorilerAc()).pack(pady=10)
+        ctk.CTkButton(self, text="Ödünç İşlemleri", command=lambda: FormOduncAc()).pack(pady=10)
         ctk.CTkButton(self, text="Çıkış", command=self.quit).pack(pady=10)
 
     def on_close(self):
