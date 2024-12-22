@@ -4,7 +4,7 @@ from tkinter import ttk
 import tkinter.messagebox as mb
 import Fonksiyonlar.GenelFonksiyonlar as gf
 import Fonksiyonlar.Veritabani as vt
-from datetime import datetime
+from datetime import datetime, timedelta
 import tkcalendar as tkcal
 
 class Odunc(ctk.CTkToplevel):
@@ -14,137 +14,161 @@ class Odunc(ctk.CTkToplevel):
         gf.CenterWindow(self, 700, 700)
         self.title("Ödünç İşlemleri")
 
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
         try:
-            dataUyeler = vt.UyeListesi()
-            dataUyeler.insert(0, (-1, "Seçiniz")) # İlk sıraya "Seçiniz" ekle
+            self.dataUyeler = vt.UyeListesi()
+            self.dataUyeler.insert(0, (-1, "Seçiniz"))
 
-            dataKitaplar = vt.KitapListesi()
-            dataKitaplar.insert(0, (-1, "Seçiniz")) # İlk sıraya "Seçiniz" ekle
+            self.dataKitaplar = vt.KitapListesi()
+            self.dataKitaplar.insert(0, (-1, "Seçiniz"))
 
-            displayUyeler = [row[1] for row in dataUyeler] # Üye Adını al
-            displayKitaplar = [row[1] for row in dataKitaplar] # Kitap Adını al
+            self.dataAlindiMi = [(1, "Alındı"), (0, "Alınmadı")]
 
-            valueUyeler = {row[1]: row[0] for row in dataUyeler} # Üye ID al | Bunu ödünç kaydetmek için kullanacağız
-            valueKitaplar = {row[1]: row[0] for row in dataKitaplar} # Kitap ID al | Bunu ödünç kaydetmek için kullanacağız
+            self.displayUyeler = [row[1] for row in self.dataUyeler]
+            self.displayKitaplar = [row[1] for row in self.dataKitaplar]
+            self.displayAlindiMi = [row[1] for row in self.dataAlindiMi]
+
+            self.valueUyeler = {row[1]: row[0] for row in self.dataUyeler}
+            self.valueKitaplar = {row[1]: row[0] for row in self.dataKitaplar}
+            self.valueAlindiMi = {row[1]: row[0] for row in self.dataAlindiMi}
         except Exception as e:
             mb.showerror("Hata", f"Ödünç listesi alınırken hata oluştu: {str(e)}")
 
-        def Listele():
-            try:
-                tw_Kategoriler.delete(*tw_Kategoriler.get_children())
-                data = vt.OduncListesi()
-                gf.PopulateTreeview(tw_Kategoriler, data)
-            except Exception as e:
-                mb.showerror("Hata", f"Ödünç listesi alınırken hata oluştu: {str(e)}")
+        self.create_widgets()
+        self.populate_comboboxes()
+        self.new_record()
+        self.list_records()
 
-        def YeniKayit():
-            txtIslemID.set("-1")
-            txtUyeAdi.set("Seçiniz")
-            txtKitapAdi.set("Seçiniz")
-            txtOduncTarihi.set(datetime.now().strftime("%Y-%m-%d"))
-            txtIadeTarihi.set(datetime.now().strftime("%Y-%m-%d"))
-        
-        def Kaydet():
-            try:
-                if txtUyeAdi.get() == "Seçiniz" or txtKitapAdi.get() == "Seçiniz" or txtOduncTarihi.get() == "" or txtIadeTarihi.get() == "":
-                    mb.showwarning("Uyarı", "Lütfen tüm alanları doldurunuz!")
-                    return
-                vt.OduncEkleGuncelle(
-                    txtIslemID.get(),
-                    valueUyeler.get(txtUyeAdi.get()),
-                    valueKitaplar.get(txtKitapAdi.get()),
-                    txtOduncTarihi.get(),
-                    txtIadeTarihi.get()
-                )
-                Listele()
-                YeniKayit()
-            except Exception as e:
-                mb.showerror("Hata", f"Ödünç kaydedilirken hata oluştu: {str(e)}")
-        
-        def Sil():
-            try:
-                if txtIslemID.get() == "-1":
-                    mb.showwarning("Uyarı", "Silinecek kaydı seçiniz!")
-                    return
-                vt.OduncSil(txtIslemID.get())
-                Listele()
-                YeniKayit()
-            except Exception as e:
-                mb.showerror("Hata", f"Ödünç silinirken hata oluştu: {str(e)}")
-
-        tw_Kategoriler = ttk.Treeview(
+    def create_widgets(self):
+        self.tw_Kategoriler = ttk.Treeview(
             self,
-            columns=("IslemID", "UyeAdi", "KitapAdi", "OduncTarihi", "IadeTarihi"),
+            columns=("IslemID", "UyeAdi", "KitapAdi", "OduncTarihi", "IadeTarihi", "AlindiMi"),
             show="headings",
         )
-        tw_Kategoriler.grid(
-            row=0, column=0, columnspan=4, padx=2, pady=2, sticky="nsew"
-        )
+        self.tw_Kategoriler.grid(row=0, column=0, columnspan=4, padx=2, pady=2, sticky="nsew")
 
-        tw_Kategoriler.heading("IslemID", text="İşlem ID", anchor="center")
-        tw_Kategoriler.heading("UyeAdi", text="Üye Adı")
-        tw_Kategoriler.heading("KitapAdi", text="Kitap Adı")
-        tw_Kategoriler.heading("OduncTarihi", text="OduncTarihi")
-        tw_Kategoriler.heading("IadeTarihi", text="IadeTarihi")
+        for col in self.tw_Kategoriler["columns"]:
+            self.tw_Kategoriler.heading(col, text=col, anchor="center")
+            self.tw_Kategoriler.column(col, width=150)
 
-        tw_Kategoriler.column("IslemID", width=80)
-        tw_Kategoriler.column("UyeAdi", width=150)
-        tw_Kategoriler.column("KitapAdi", width=150)
-        tw_Kategoriler.column("OduncTarihi", width=150)
-        tw_Kategoriler.column("IadeTarihi", width=150)
+        self.tw_Kategoriler.column("IslemID", width=80)
+        self.tw_Kategoriler.column("AlindiMi", width=80)
 
-        txtIslemID = tk.StringVar()
-        txtUyeAdi = tk.StringVar()
-        txtKitapAdi = tk.StringVar()
-        txtOduncTarihi = tk.StringVar()
-        txtIadeTarihi = tk.StringVar()
+        self.txtIslemID = tk.StringVar()
+        self.txtUyeAdi = tk.StringVar()
+        self.txtKitapAdi = tk.StringVar()
+        self.txtOduncTarihi = tk.StringVar()
+        self.txtIadeTarihi = tk.StringVar()
+        self.txtAlindiMi = tk.StringVar()
 
         alt = ctk.CTkFrame(self)
         alt.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
+        alt.grid_columnconfigure(1, weight=1)
+        alt.grid_columnconfigure(3, weight=1)
 
-        ctk.CTkLabel(alt, text="İşlem ID:").grid(row=1, column=0, padx=5, pady=5, sticky="w")
-        ctk.CTkEntry(alt, width=200, state="readonly", textvariable=txtIslemID).grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-        ctk.CTkLabel(alt, text="Üye Adı:").grid(row=1, column=2, padx=5, pady=5, sticky="w")
-        cmb1 = ctk.CTkOptionMenu(alt, width=200, variable=txtUyeAdi)
-        cmb1.grid(row=1, column=3, padx=5, pady=5, sticky="w")
-
-        ctk.CTkLabel(alt, text="Kitap Adı:").grid(row=2, column=0, padx=5, pady=5, sticky="w")
-        cmb2 = ctk.CTkOptionMenu(alt, width=200, variable=txtKitapAdi)
-        cmb2.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-
-        ctk.CTkLabel(alt, text="Ödünç Tarihi:").grid(row=2, column=2, padx=5, pady=5, sticky="w")
-        tkcal.DateEntry(alt, width= 30, textvariable=txtOduncTarihi, date_pattern='yyyy-mm-dd').grid(row=2, column=3, padx=5, pady=5, sticky="w")
-
-        ctk.CTkLabel(alt, text="İade Tarihi:").grid(row=3, column=0, padx=5, pady=5, sticky="w")
-        tkcal.DateEntry(alt, width= 30, textvariable=txtIadeTarihi, date_pattern='yyyy-mm-dd').grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.create_label_entry(alt, "İşlem ID:", self.txtIslemID, 1, 0, readonly=True)
+        self.create_label_combobox(alt, "Üye Adı:", self.txtUyeAdi, 1, 2)
+        self.create_label_combobox(alt, "Kitap Adı:", self.txtKitapAdi, 2, 0)
+        self.create_label_dateentry(alt, "Ödünç Tarihi:", self.txtOduncTarihi, 2, 2)
+        self.create_label_dateentry(alt, "İade Tarihi:", self.txtIadeTarihi, 3, 0)
+        self.create_label_combobox(alt, "Alındı mı:", self.txtAlindiMi, 3, 2)
 
         butonlar = ctk.CTkFrame(self)
         butonlar.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
+        butonlar.grid_columnconfigure(0, weight=1)
+        butonlar.grid_columnconfigure(1, weight=1)
+        butonlar.grid_columnconfigure(2, weight=1)
 
-        btnYeniKayit = ctk.CTkButton(butonlar, text="Yeni Kayıt Ekle", command=lambda: YeniKayit())
-        btnYeniKayit.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.create_button(butonlar, "Yeni Kayıt Ekle", self.new_record, 0, 0)
+        self.create_button(butonlar, "Ekle/Güncelle", self.save_record, 0, 1)
+        self.create_button(butonlar, "Sil", self.delete_record, 0, 2)
 
-        btnEkle = ctk.CTkButton(butonlar, text="Ekle/Güncelle", command=lambda: Kaydet())
-        btnEkle.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.tw_Kategoriler.bind("<ButtonRelease-1>", self.treeview_selected_item)
 
-        btnSil = ctk.CTkButton(butonlar, text="Sil", command=lambda: Sil())
-        btnSil.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    def create_label_entry(self, parent, text, variable, row, column, readonly=False):
+        ctk.CTkLabel(parent, text=text).grid(row=row, column=column, padx=5, pady=5, sticky="w")
+        state = "readonly" if readonly else "normal"
+        ctk.CTkEntry(parent, width=200, state=state, textvariable=variable).grid(row=row, column=column + 1, padx=5, pady=5, sticky="ew")
 
-        cmb1.configure(values=displayUyeler)
-        cmb1.set("Seçiniz")
+    def create_label_combobox(self, parent, text, variable, row, column):
+        ctk.CTkLabel(parent, text=text).grid(row=row, column=column, padx=5, pady=5, sticky="w")
+        cmb = ctk.CTkOptionMenu(parent, width=200, variable=variable)
+        cmb.grid(row=row, column=column + 1, padx=5, pady=5, sticky="ew")
+        setattr(self, f"cmb_{text.split()[0].lower()}", cmb)
 
-        cmb2.configure(values=displayKitaplar)
-        cmb2.set("Seçiniz")
+    def create_label_dateentry(self, parent, text, variable, row, column):
+        ctk.CTkLabel(parent, text=text).grid(row=row, column=column, padx=5, pady=5, sticky="w")
+        tkcal.DateEntry(parent, width=30, textvariable=variable, date_pattern='yyyy-mm-dd').grid(row=row, column=column + 1, padx=5, pady=5, sticky="ew")
 
-        def TreeviewSelectedItem(event):
-            selected_item = tw_Kategoriler.selection()
-            if selected_item:
-                item = tw_Kategoriler.item(selected_item)
-                txtIslemID.set(item["values"][0])
-                txtUyeAdi.set(item["values"][1])
-                txtKitapAdi.set(item["values"][2])
-                txtOduncTarihi.set(item["values"][3])
-                txtIadeTarihi.set(item["values"][4])
+    def create_button(self, parent, text, command, row, column):
+        ctk.CTkButton(parent, text=text, command=command).grid(row=row, column=column, padx=5, pady=5, sticky="ew")
 
-        tw_Kategoriler.bind("<ButtonRelease-1>", TreeviewSelectedItem)
+    def populate_comboboxes(self):
+        self.cmb_uye.configure(values=self.displayUyeler)
+        self.cmb_uye.set("Seçiniz")
+
+        self.cmb_kitap.configure(values=self.displayKitaplar)
+        self.cmb_kitap.set("Seçiniz")
+
+        self.cmb_alındı.configure(values=self.displayAlindiMi)
+        self.cmb_alındı.set("Alınmadı")
+
+    def list_records(self):
+        try:
+            self.tw_Kategoriler.delete(*self.tw_Kategoriler.get_children())
+            data = vt.OduncListesi()
+            gf.PopulateTreeview(self.tw_Kategoriler, data)
+        except Exception as e:
+            mb.showerror("Hata", f"Sayın {gf.kullaniciAdi} Ödünç listesi alınırken hata oluştu:\n{str(e)}")
+
+    def new_record(self):
+        self.txtIslemID.set("-1")
+        self.txtUyeAdi.set("Seçiniz")
+        self.txtKitapAdi.set("Seçiniz")
+        self.txtOduncTarihi.set(datetime.now().strftime("%Y-%m-%d"))
+        self.txtIadeTarihi.set((datetime.now() + timedelta(weeks=1)).strftime("%Y-%m-%d"))
+
+    def save_record(self):
+        try:
+            if self.txtUyeAdi.get() == "Seçiniz" or self.txtKitapAdi.get() == "Seçiniz" or not self.txtOduncTarihi.get() or not self.txtIadeTarihi.get():
+                mb.showwarning("Uyarı", "Lütfen tüm alanları doldurunuz!")
+                return
+            vt.OduncEkleGuncelle(
+                self.txtIslemID.get(),
+                self.valueUyeler[self.txtUyeAdi.get()],
+                self.valueKitaplar[self.txtKitapAdi.get()],
+                1,
+                self.txtOduncTarihi.get(),
+                self.txtIadeTarihi.get(),
+                self.valueAlindiMi[self.txtAlindiMi.get()]
+            )
+            self.list_records()
+            self.new_record()
+        except Exception as e:
+            mb.showerror("Hata", f"Sayın {gf.kullaniciAdi} Ödünç kaydedilirken hata oluştu:\n{str(e)}")
+
+    def delete_record(self):
+        try:
+            if self.txtIslemID.get() == "-1":
+                mb.showwarning("Uyarı", "Silinecek kaydı seçiniz!")
+                return
+            if not mb.askyesno("Onay", "Seçili ödünç kaydı silinsin mi?"):
+                return
+            vt.OduncSil(self.txtIslemID.get())
+            self.list_records()
+            self.new_record()
+        except Exception as e:
+            mb.showerror("Hata", f"Sayın {gf.kullaniciAdi} Ödünç silinirken hata oluştu:\n{str(e)}")
+
+    def treeview_selected_item(self, event):
+        selected_item = self.tw_Kategoriler.selection()
+        if selected_item:
+            item = self.tw_Kategoriler.item(selected_item)
+            self.txtIslemID.set(item["values"][0])
+            self.txtUyeAdi.set(item["values"][1])
+            self.txtKitapAdi.set(item["values"][2])
+            self.txtOduncTarihi.set(item["values"][3])
+            self.txtIadeTarihi.set(item["values"][4])
+            self.txtAlindiMi.set(item["values"][5])

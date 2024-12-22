@@ -10,6 +10,7 @@ conn_str = (
 
 GIRIS_KONTROL = "Select * from GirisKontrol(?,?)"
 KATEGORI_LISTESI = "Select * from KategoriListesi()"
+KITAP_GECIKTIRENLER = "Select * from KitapGeciktirenler()"
 KITAP_LISTESI = "Select * from KitapListesi()"
 KULLANICI_LISTESI = "Select * from KullaniciListesi()"
 ODUNC_LISTESI = "Select * from OduncListesi()"
@@ -17,10 +18,10 @@ UYE_LISTESI = "Select * from UyeListesi()"
 YAYINCI_LISTESI = "Select * from YayinciListesi()"
 YAZAR_LISTESI = "Select * from YazarListesi()"
 
-KITAP_EKLE_GUNCELLE = "exec KitapEkleGuncelle @KitapID = ?, @KitapAdi = ?, @YazarID = ?, @YayinciID = ?, @KategoriID = ?, @BasimYili = ?, @SayfaSayisi = ?, @StokAdedi = ?"
+KITAP_EKLE_GUNCELLE = "exec KitapEkleGuncelle @KitapID = ?, @KitapAdi = ?, @YazarID = ?, @YayinciID = ?, @KategoriID = ?, @BasimYili = ?, @SayfaSayisi = ?"
 KATEGORI_EKLE_GUNCELLE = "exec KategoriEkleGuncelle @KategoriID = ?, @KategoriAdi = ?"
 KULLANICI_EKLE_GUNCELLE = "exec KullaniciEkleGuncelle @KullaniciID = ?, @Adi = ?, @Soyadi = ?, @Email = ?, @Sifre = ?"
-ODUNC_EKLE_GUNCELLE = "exec OduncEkleGuncelle @OduncID = ?, @KitapID = ?, @UyeID = ?, @VerilisTarihi = ?, @TeslimTarihi = ?"
+ODUNC_EKLE_GUNCELLE = "exec OduncEkleGuncelle @IslemID = ?, @UyeID = ?, @KitapID = ?, @KullaniciID = ?, @OduncTarihi = ?, @IadeTarihi = ?, @AlindiMi = ?"
 UYE_EKLE_GUNCELLE = "exec UyeEkleGuncelle @UyeID = ?, @Adi = ?, @Telefon = ?, @Adres = ?, @KayitTarihi = ?"
 YAYINCI_EKLE_GUNCELLE = "exec YayinciEkleGuncelle @YayinciID = ?, @YayinciAdi = ?, @Adres = ?"
 YAZAR_EKLE_GUNCELLE = "exec YazarEkleGuncelle @YazarID = ?, @YazarAdi = ?, @DogumTarihi = ?"
@@ -28,7 +29,7 @@ YAZAR_EKLE_GUNCELLE = "exec YazarEkleGuncelle @YazarID = ?, @YazarAdi = ?, @Dogu
 KATEGORI_SIL = "exec KategoriSil @KategoriID = ?"
 KITAP_SIL = "exec KitapSil @KitapID = ?"
 KULLANICI_SIL = "exec KullaniciSil @KullaniciID = ?"
-ODUNC_SIL = "exec OduncSil @OduncID = ?"
+ODUNC_SIL = "exec OduncSil @IslemID = ?"
 UYE_SIL = "exec UyeSil @UyeID = ?"
 YAYINCI_SIL = "exec YayinciSil @YayinciID = ?"
 YAZAR_SIL = "exec YazarSil @YazarID = ?"
@@ -47,6 +48,10 @@ def Login(email, sifre):
 
 def KategoriListesi():
     cursor.execute(KATEGORI_LISTESI)
+    return cursor.fetchall()
+
+def KitapGeciktirenlerListesi():
+    cursor.execute(KITAP_GECIKTIRENLER)
     return cursor.fetchall()
 
 def KitapListesi():
@@ -80,16 +85,16 @@ def KategoriEkleGuncelle(kategoriID, kategoriAdi):
     cursor.execute(KATEGORI_EKLE_GUNCELLE, kategoriID, kategoriAdi)
     conn.commit()
 
-def KitapEkleGuncelle(kitapID, kitapAdi, yazarID, yayinciID, kategoriID, basimTarihi, sayfaSayisi, stokAdedi):
-    cursor.execute(KITAP_EKLE_GUNCELLE, kitapID, kitapAdi, yazarID, yayinciID, kategoriID, basimTarihi, sayfaSayisi, stokAdedi)
+def KitapEkleGuncelle(kitapID, kitapAdi, yazarID, yayinciID, kategoriID, basimTarihi, sayfaSayisi):
+    cursor.execute(KITAP_EKLE_GUNCELLE, kitapID, kitapAdi, yazarID, yayinciID, kategoriID, basimTarihi, sayfaSayisi)
     conn.commit()
 
 def KullaniciEkleGuncelle(kullaniciID, adi, soyadi, email, sifre):
     cursor.execute(KULLANICI_EKLE_GUNCELLE, kullaniciID, adi, soyadi, email, sifre)
     conn.commit()
 
-def OduncEkleGuncelle(oduncID, kitapID, uyeID, verilisTarihi, teslimTarihi):
-    cursor.execute(ODUNC_EKLE_GUNCELLE, oduncID, kitapID, uyeID, verilisTarihi, teslimTarihi)
+def OduncEkleGuncelle(islemID, uyeID, kitapID, kullaniciID, oduncTarihi, iadeTarihi, alindiMi):
+    cursor.execute(ODUNC_EKLE_GUNCELLE, islemID, uyeID, kitapID, kullaniciID, oduncTarihi, iadeTarihi, alindiMi)
     conn.commit()
 
 def UyeEkleGuncelle(uyeID, adi, telefon, adres, kayitTarihi):
