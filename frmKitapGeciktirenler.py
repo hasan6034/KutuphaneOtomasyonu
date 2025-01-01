@@ -12,7 +12,6 @@ class KitapGeciktirenler(ctk.CTkToplevel):
         self.populate_treeview()
 
     def setup_ui(self):
-        ctk.set_default_color_theme("green")
         gf.CenterWindow(self, 1000, 700)
         self.title("Kitabını Geciktirenler")
 
@@ -21,25 +20,32 @@ class KitapGeciktirenler(ctk.CTkToplevel):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        self.tw_Geciktirenler = ttk.Treeview(
-            self,
-            columns=("UyeAdi", "Telefon", "Adres", "KitapAdi", "OduncTarihi", "GecikmeSuresi"),
-            show="headings",
-        )
+        columns = ("UyeAdi", "Telefon", "Adres", "KitapAdi", "OduncTarihi", "GecikmeSuresi")
+        self.tw_Geciktirenler = ttk.Treeview(self, columns=columns, show="headings")
 
-        self.tw_Geciktirenler.heading("UyeAdi", text="Üye Adı")
-        self.tw_Geciktirenler.heading("Telefon", text="Telefon")
-        self.tw_Geciktirenler.heading("Adres", text="Adres")
-        self.tw_Geciktirenler.heading("KitapAdi", text="Kitap Adı")
-        self.tw_Geciktirenler.heading("OduncTarihi", text="Ödünç Tarihi")
-        self.tw_Geciktirenler.heading("GecikmeSuresi", text="Gecikme Süresi")
+        headings = {
+            "UyeAdi": "Üye Adı",
+            "Telefon": "Telefon",
+            "Adres": "Adres",
+            "KitapAdi": "Kitap Adı",
+            "OduncTarihi": "Ödünç Tarihi",
+            "GecikmeSuresi": "Gecikme Süresi"
+        }
 
-        self.tw_Geciktirenler.column("UyeAdi", width=150)
-        self.tw_Geciktirenler.column("Telefon", width=90)
-        self.tw_Geciktirenler.column("Adres", width=200)
-        self.tw_Geciktirenler.column("KitapAdi", width=150)
-        self.tw_Geciktirenler.column("OduncTarihi", width=90)
-        self.tw_Geciktirenler.column("GecikmeSuresi", width=80)
+        for col, heading in headings.items():
+            self.tw_Geciktirenler.heading(col, text=heading)
+
+        column_widths = {
+            "UyeAdi": 150,
+            "Telefon": 90,
+            "Adres": 200,
+            "KitapAdi": 150,
+            "OduncTarihi": 90,
+            "GecikmeSuresi": 80
+        }
+
+        for col, width in column_widths.items():
+            self.tw_Geciktirenler.column(col, width=width)
 
         self.tw_Geciktirenler.grid(row=0, column=0, sticky="nsew")
 

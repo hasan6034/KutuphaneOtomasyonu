@@ -17,6 +17,13 @@ class Odunc(ctk.CTkToplevel):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+        self.initialize_data()
+        self.create_widgets()
+        self.populate_comboboxes()
+        self.new_record()
+        self.list_records()
+
+    def initialize_data(self):
         try:
             self.dataUyeler = vt.UyeListesi()
             self.dataUyeler.insert(0, (-1, "Seçiniz"))
@@ -36,12 +43,12 @@ class Odunc(ctk.CTkToplevel):
         except Exception as e:
             mb.showerror("Hata", f"Ödünç listesi alınırken hata oluştu: {str(e)}")
 
-        self.create_widgets()
-        self.populate_comboboxes()
-        self.new_record()
-        self.list_records()
-
     def create_widgets(self):
+        self.create_treeview()
+        self.create_form()
+        self.create_buttons()
+
+    def create_treeview(self):
         self.tw_Kategoriler = ttk.Treeview(
             self,
             columns=("IslemID", "UyeAdi", "KitapAdi", "OduncTarihi", "IadeTarihi", "AlindiMi"),
@@ -55,7 +62,9 @@ class Odunc(ctk.CTkToplevel):
 
         self.tw_Kategoriler.column("IslemID", width=80)
         self.tw_Kategoriler.column("AlindiMi", width=80)
+        self.tw_Kategoriler.bind("<ButtonRelease-1>", self.treeview_selected_item)
 
+    def create_form(self):
         self.txtIslemID = tk.StringVar()
         self.txtUyeAdi = tk.StringVar()
         self.txtKitapAdi = tk.StringVar()
@@ -63,29 +72,28 @@ class Odunc(ctk.CTkToplevel):
         self.txtIadeTarihi = tk.StringVar()
         self.txtAlindiMi = tk.StringVar()
 
-        alt = ctk.CTkFrame(self)
-        alt.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
-        alt.grid_columnconfigure(1, weight=1)
-        alt.grid_columnconfigure(3, weight=1)
+        form_frame = ctk.CTkFrame(self)
+        form_frame.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
+        form_frame.grid_columnconfigure(1, weight=1)
+        form_frame.grid_columnconfigure(3, weight=1)
 
-        self.create_label_entry(alt, "İşlem ID:", self.txtIslemID, 1, 0, readonly=True)
-        self.create_label_combobox(alt, "Üye Adı:", self.txtUyeAdi, 1, 2)
-        self.create_label_combobox(alt, "Kitap Adı:", self.txtKitapAdi, 2, 0)
-        self.create_label_dateentry(alt, "Ödünç Tarihi:", self.txtOduncTarihi, 2, 2)
-        self.create_label_dateentry(alt, "İade Tarihi:", self.txtIadeTarihi, 3, 0)
-        self.create_label_combobox(alt, "Alındı mı:", self.txtAlindiMi, 3, 2)
+        self.create_label_entry(form_frame, "İşlem ID:", self.txtIslemID, 1, 0, readonly=True)
+        self.create_label_combobox(form_frame, "Üye Adı:", self.txtUyeAdi, 1, 2)
+        self.create_label_combobox(form_frame, "Kitap Adı:", self.txtKitapAdi, 2, 0)
+        self.create_label_dateentry(form_frame, "Ödünç Tarihi:", self.txtOduncTarihi, 2, 2)
+        self.create_label_dateentry(form_frame, "İade Tarihi:", self.txtIadeTarihi, 3, 0)
+        self.create_label_combobox(form_frame, "Alındı mı:", self.txtAlindiMi, 3, 2)
 
-        butonlar = ctk.CTkFrame(self)
-        butonlar.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
-        butonlar.grid_columnconfigure(0, weight=1)
-        butonlar.grid_columnconfigure(1, weight=1)
-        butonlar.grid_columnconfigure(2, weight=1)
+    def create_buttons(self):
+        button_frame = ctk.CTkFrame(self)
+        button_frame.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
+        button_frame.grid_columnconfigure(0, weight=1)
+        button_frame.grid_columnconfigure(1, weight=1)
+        button_frame.grid_columnconfigure(2, weight=1)
 
-        self.create_button(butonlar, "Yeni Kayıt Ekle", self.new_record, 0, 0)
-        self.create_button(butonlar, "Ekle/Güncelle", self.save_record, 0, 1)
-        self.create_button(butonlar, "Sil", self.delete_record, 0, 2)
-
-        self.tw_Kategoriler.bind("<ButtonRelease-1>", self.treeview_selected_item)
+        self.create_button(button_frame, "Yeni Kayıt Ekle", self.new_record, 0, 0)
+        self.create_button(button_frame, "Ekle/Güncelle", self.save_record, 0, 1)
+        self.create_button(button_frame, "Sil", self.delete_record, 0, 2)
 
     def create_label_entry(self, parent, text, variable, row, column, readonly=False):
         ctk.CTkLabel(parent, text=text).grid(row=row, column=column, padx=5, pady=5, sticky="w")
@@ -106,8 +114,8 @@ class Odunc(ctk.CTkToplevel):
         ctk.CTkButton(parent, text=text, command=command).grid(row=row, column=column, padx=5, pady=5, sticky="ew")
 
     def populate_comboboxes(self):
-        self.cmb_uye.configure(values=self.displayUyeler)
-        self.cmb_uye.set("Seçiniz")
+        self.cmb_üye.configure(values=self.displayUyeler)
+        self.cmb_üye.set("Seçiniz")
 
         self.cmb_kitap.configure(values=self.displayKitaplar)
         self.cmb_kitap.set("Seçiniz")
@@ -139,7 +147,7 @@ class Odunc(ctk.CTkToplevel):
                 self.txtIslemID.get(),
                 self.valueUyeler[self.txtUyeAdi.get()],
                 self.valueKitaplar[self.txtKitapAdi.get()],
-                1,
+                gf.kullaniciID,
                 self.txtOduncTarihi.get(),
                 self.txtIadeTarihi.get(),
                 self.valueAlindiMi[self.txtAlindiMi.get()]

@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [KutuphaneDB]    Script Date: 22.12.2024 15:42:13 ******/
+/****** Object:  Database [KutuphaneDB]    Script Date: 1.01.2025 16:09:30 ******/
 CREATE DATABASE [KutuphaneDB]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -84,7 +84,7 @@ ALTER DATABASE [KutuphaneDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEAN
 GO
 USE [KutuphaneDB]
 GO
-/****** Object:  Table [dbo].[Kitaplar]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[Kitaplar]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -103,7 +103,7 @@ CREATE TABLE [dbo].[Kitaplar](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Uyeler]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[Uyeler]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -120,7 +120,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OduncIslemleri]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[OduncIslemleri]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -139,7 +139,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  UserDefinedFunction [dbo].[KitapGeciktirenler]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[KitapGeciktirenler]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -171,7 +171,7 @@ RETURN
 		datediff(day,o.OduncTarihi,GETDATE()) > 7
 )
 GO
-/****** Object:  Table [dbo].[Kullanicilar]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[Kullanicilar]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -188,7 +188,7 @@ CREATE TABLE [dbo].[Kullanicilar](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  UserDefinedFunction [dbo].[GirisKontrol]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[GirisKontrol]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -207,10 +207,10 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	select Adi + ' ' + Soyadi as "AdSoyad" from Kullanicilar where Email = @Email and Sifre = @Sifre
+	select Adi + ' ' + Soyadi as "AdSoyad", KullaniciID from Kullanicilar where Email = @Email and Sifre = @Sifre
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[UyeListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[UyeListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -233,7 +233,7 @@ RETURN
 		Uyeler
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[KullaniciListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[KullaniciListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -253,7 +253,7 @@ RETURN
 	SELECT KullaniciID,Adi,Soyadi,Email,Sifre FROM Kullanicilar
 )
 GO
-/****** Object:  Table [dbo].[Yazarlar]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[Yazarlar]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -268,7 +268,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Kategoriler]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[Kategoriler]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -282,7 +282,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Yayincilar]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  Table [dbo].[Yayincilar]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -297,7 +297,7 @@ CREATE TABLE [dbo].[Yayincilar](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  UserDefinedFunction [dbo].[KitapListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[KitapListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -330,7 +330,7 @@ RETURN
 		Kategoriler kat on k.KategoriID = kat.KategoriID
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[YayinciListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[YayinciListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -353,7 +353,7 @@ RETURN
 		Yayincilar
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[YazarListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[YazarListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -376,7 +376,7 @@ RETURN
 		Yazarlar
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[OduncListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[OduncListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -411,7 +411,7 @@ RETURN
 		Kullanicilar kul on o.KullaniciID = kul.KullaniciID
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[KategoriListesi]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  UserDefinedFunction [dbo].[KategoriListesi]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -433,13 +433,87 @@ RETURN
 		Kategoriler
 )
 GO
+SET IDENTITY_INSERT [dbo].[Kategoriler] ON 
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (1, N'Gençlik')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (2, N'Anı')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (3, N'Anlatı')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (4, N'Çizgi Roman')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (5, N'Deneme')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (6, N'Edebiyat')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (7, N'Bilim')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (8, N'Araştırma')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (9, N'Biyogrofi')
+GO
+INSERT [dbo].[Kategoriler] ([KategoriID], [KategoriAdi]) VALUES (10, N'Oto Biyografi')
+GO
+SET IDENTITY_INSERT [dbo].[Kategoriler] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Kitaplar] ON 
+GO
+INSERT [dbo].[Kitaplar] ([KitapID], [KitapAdi], [YazarID], [YayinciID], [KategoriID], [BasimYili], [SayfaSayisi]) VALUES (1, N'Sol Ayağım', 2, 1, 10, CAST(N'2025-01-01' AS Date), 250)
+GO
+INSERT [dbo].[Kitaplar] ([KitapID], [KitapAdi], [YazarID], [YayinciID], [KategoriID], [BasimYili], [SayfaSayisi]) VALUES (2, N'Tuş Beyinli', 1, 2, 1, CAST(N'2025-01-01' AS Date), 300)
+GO
+SET IDENTITY_INSERT [dbo].[Kitaplar] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Kullanicilar] ON 
+GO
+INSERT [dbo].[Kullanicilar] ([KullaniciID], [Adi], [Soyadi], [Email], [Sifre]) VALUES (1, N'Yetkili', N'Kullanıcı', N'admin', N'1234')
+GO
+SET IDENTITY_INSERT [dbo].[Kullanicilar] OFF
+GO
+SET IDENTITY_INSERT [dbo].[OduncIslemleri] ON 
+GO
+INSERT [dbo].[OduncIslemleri] ([IslemID], [UyeID], [KitapID], [KullaniciID], [OduncTarihi], [IadeTarihi], [AlindiMi]) VALUES (1, 1, 1, 1, CAST(N'2025-01-01' AS Date), CAST(N'2025-01-08' AS Date), 0)
+GO
+INSERT [dbo].[OduncIslemleri] ([IslemID], [UyeID], [KitapID], [KullaniciID], [OduncTarihi], [IadeTarihi], [AlindiMi]) VALUES (2, 2, 2, 1, CAST(N'2025-01-01' AS Date), CAST(N'2025-01-08' AS Date), 1)
+GO
+INSERT [dbo].[OduncIslemleri] ([IslemID], [UyeID], [KitapID], [KullaniciID], [OduncTarihi], [IadeTarihi], [AlindiMi]) VALUES (3, 3, 2, 1, CAST(N'2025-01-01' AS Date), CAST(N'2025-01-08' AS Date), 0)
+GO
+SET IDENTITY_INSERT [dbo].[OduncIslemleri] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Uyeler] ON 
+GO
+INSERT [dbo].[Uyeler] ([UyeID], [UyeAdi], [Telefon], [Adres], [KayitTarihi]) VALUES (1, N'Caner ORAK', N'531629356', N'Bitlis', CAST(N'2025-01-01' AS Date))
+GO
+INSERT [dbo].[Uyeler] ([UyeID], [UyeAdi], [Telefon], [Adres], [KayitTarihi]) VALUES (2, N'Kürşat KUTLUYER', N'555665455', N'Karaman', CAST(N'2025-01-01' AS Date))
+GO
+INSERT [dbo].[Uyeler] ([UyeID], [UyeAdi], [Telefon], [Adres], [KayitTarihi]) VALUES (3, N'Zafer ŞİMŞEK', N'5444444', N'Mersin', CAST(N'2024-12-31' AS Date))
+GO
+SET IDENTITY_INSERT [dbo].[Uyeler] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Yayincilar] ON 
+GO
+INSERT [dbo].[Yayincilar] ([YayinciID], [YayinciAdi], [Adres]) VALUES (1, N'Nora Kitap', N'Gümüşsuyu Mah. Osmanlı Sokak Osmanlı İş Merkezi No:18 Kat:2/9 Beyoğlu - İSTANBUL')
+GO
+INSERT [dbo].[Yayincilar] ([YayinciID], [YayinciAdi], [Adres]) VALUES (2, N'Genç Nesil', N'Orhan Gazi Mahallesi 19.YOL Sokak No: 8, 34538 Esenyurt / İstanbul')
+GO
+SET IDENTITY_INSERT [dbo].[Yayincilar] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Yazarlar] ON 
+GO
+INSERT [dbo].[Yazarlar] ([YazarID], [YazarAdi], [DogumTarihi]) VALUES (1, N'Yusuf ASAL', CAST(N'1973-07-01' AS Date))
+GO
+INSERT [dbo].[Yazarlar] ([YazarID], [YazarAdi], [DogumTarihi]) VALUES (2, N'Christy Brown', CAST(N'1980-05-12' AS Date))
+GO
+SET IDENTITY_INSERT [dbo].[Yazarlar] OFF
+GO
 ALTER TABLE [dbo].[Kullanicilar] ADD  CONSTRAINT [DF__Calisanla__IseGi__403A8C7D]  DEFAULT (getdate()) FOR [Sifre]
 GO
 ALTER TABLE [dbo].[OduncIslemleri] ADD  DEFAULT (getdate()) FOR [OduncTarihi]
 GO
 ALTER TABLE [dbo].[Uyeler] ADD  DEFAULT (getdate()) FOR [KayitTarihi]
 GO
-/****** Object:  StoredProcedure [dbo].[KategoriEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[KategoriEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -468,7 +542,7 @@ BEGIN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[KategoriSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[KategoriSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -482,19 +556,24 @@ CREATE PROCEDURE [dbo].[KategoriSil]
 	@KategoriID int
 AS
 BEGIN
+	IF EXISTS (SELECT 1 FROM Kitaplar WHERE KategoriID = @KategoriID)
+	BEGIN
+		RAISERROR('Bu Kategori Silinemez. Bu Kategoriyi Silmek Veri Tutarsızlığına Neden Olabilir.', 16, 1);
+		RETURN
+	END
 	IF EXISTS (SELECT 1 FROM Kategoriler WHERE KategoriID = @KategoriID)
 	BEGIN
 		DELETE FROM Kategoriler WHERE KategoriID = @KategoriID
-		SELECT 'Kategori başarıyla silindi.' as Sonuc
 	END
 
 	ELSE
 	BEGIN
-		SELECT 'Kategori bulunamadı.' as Sonuc
+		RAISERROR('Kategori Bulunamadı.', 16, 1);
+		RETURN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[KitapEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[KitapEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -551,7 +630,7 @@ BEGIN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[KitapSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[KitapSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -565,19 +644,24 @@ CREATE PROCEDURE [dbo].[KitapSil]
 	@KitapID int
 AS
 BEGIN
+	IF EXISTS (SELECT 1 FROM OduncIslemleri WHERE KitapID = @KitapID)
+	BEGIN
+		RAISERROR('Bu Kitap Silinemez. Bu Kitabı Silmek Veri Tutarsızlığına Neden Olabilir.', 16, 1);
+		RETURN
+	END
 	IF EXISTS (SELECT 1 FROM Kitaplar WHERE KitapID = @KitapID)
 	BEGIN
 		DELETE FROM Kitaplar WHERE KitapID = @KitapID
-		SELECT 'Kitap başarıyla silindi.' as Sonuc
 	END
 
 	ELSE
 	BEGIN
-		SELECT 'Kitap bulunamadı.' as Sonuc
+		RAISERROR('Kitap bulunamadı.', 16, 1);
+		RETURN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[KullaniciEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[KullaniciEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -609,7 +693,7 @@ BEGIN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[KullaniciSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[KullaniciSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -624,27 +708,32 @@ CREATE PROCEDURE [dbo].[KullaniciSil]
 	@KullaniciID int
 AS
 BEGIN
+	IF @KullaniciID = 1
+	BEGIN
+		RAISERROR('İlk Kullanıcı Silinemez.', 16, 1);
+		RETURN
+	END
+	IF EXISTS (SELECT 1 FROM OduncIslemleri WHERE KullaniciID = @KullaniciID)
+	BEGIN
+		RAISERROR('Bu Kullanıcı Silinemez. Bu Kullanıcıyı Silmek Veri Tutarsızlığına Neden Olabilir.', 16, 1);
+		RETURN
+	END
+
 	IF EXISTS (SELECT 1 FROM Kullanicilar WHERE KullaniciID = @KullaniciID)
     BEGIN
         DELETE FROM Kullanicilar WHERE KullaniciID = @KullaniciID;
-        SELECT 'Kullanıcı silindi' AS Sonuc;
     END
     ELSE
     BEGIN
-        SELECT 'Kullanıcı bulunamadı, silme işlemi yapılmadı' AS Sonuc;
+        RAISERROR('Kullanıcı bulunamadı, silme işlemi yapılmadı',16,1);
     END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[OduncEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[OduncEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
 CREATE PROCEDURE [dbo].[OduncEkleGuncelle]
 	@IslemID int,
 	@UyeID int,
@@ -655,22 +744,14 @@ CREATE PROCEDURE [dbo].[OduncEkleGuncelle]
 	@AlindiMi bit
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM OduncIslemleri WHERE IslemID= @IslemID)
+	IF @IslemID = -1
 	BEGIN
-		UPDATE OduncIslemleri
-		SET 
-			UyeID = @UyeID,
-			KitapID = @KitapID,
-			KullaniciID = @KullaniciID,
-			OduncTarihi = @OduncTarihi,
-			IadeTarihi = @IadeTarihi,
-			AlindiMi = @AlindiMi
-		WHERE
-			IslemID = @IslemID
-	END
+		IF EXISTS (SELECT 1 FROM OduncIslemleri WHERE KitapID = @KitapID AND AlindiMi = 0)
+		BEGIN
+			RAISERROR('Bu kitap başka bir kullanıcıda ve henüz iade edilmedi.', 16, 1)
+			RETURN
+		END
 
-	ELSE
-	BEGIN
 		INSERT INTO OduncIslemleri
 			(
 				UyeID,
@@ -689,10 +770,37 @@ BEGIN
 				@IadeTarihi,
 				@AlindiMi
 			)
+		RETURN
+	END
+
+	ELSE
+	BEGIN
+		DECLARE @EskiKitapID INT
+		SELECT @EskiKitapID = KitapID FROM OduncIslemleri WHERE IslemID = @IslemID
+
+		IF @EskiKitapID <> @KitapID
+		BEGIN
+			IF EXISTS (SELECT 1 FROM OduncIslemleri WHERE KitapID = @KitapID AND AlindiMi = 0)
+			BEGIN
+				RAISERROR('Yeni kitap başka bir kullanıcıda ve henüz iade edilmedi.', 16, 1)
+				RETURN
+			END
+		END
+
+		UPDATE OduncIslemleri
+		SET 
+			UyeID = @UyeID,
+			KitapID = @KitapID,
+			KullaniciID = @KullaniciID,
+			OduncTarihi = @OduncTarihi,
+			IadeTarihi = @IadeTarihi,
+			AlindiMi = @AlindiMi
+		WHERE
+			IslemID = @IslemID
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[OduncSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[OduncSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -710,16 +818,15 @@ BEGIN
 	BEGIN
 		DELETE FROM OduncIslemleri
 		WHERE IslemID = @IslemID
-		SELECT 'İşlem başarıyla tamamlandı.' as Sonuc
 	END
 
 	ELSE
 	BEGIN
-		SELECT 'İşlem bulunamadı.' as Sonuc
+		RAISERROR('İşlem bulunamadı.', 16, 1);
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[UyeEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[UyeEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -750,7 +857,7 @@ BEGIN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[UyeSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[UyeSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -764,18 +871,23 @@ CREATE PROCEDURE [dbo].[UyeSil]
 	@UyeID int
 AS
 BEGIN
+	IF EXISTS(SELECT 1 FROM OduncIslemleri WHERE UyeID = @UyeID)
+	BEGIN
+		RAISERROR('Bu Üye Silinemez. Bu Üyeyi Silmek Veri Tutarsızlığına Neden Olabilir.', 16, 1);
+		RETURN
+	END
 	IF EXISTS (SELECT 1 FROM Uyeler WHERE UyeID = @UyeID)
     BEGIN
         DELETE FROM Uyeler WHERE UyeID = @UyeID;
-        SELECT 'Üye silindi' AS Sonuc;
     END
     ELSE
     BEGIN
-        SELECT 'Üye bulunamadı, silme işlemi yapılmadı' AS Sonuc;
+		RAISERROR('Üye bulunamadı, silme işlemi yapılmadı', 16, 1);
+		RETURN
     END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[YayinciEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[YayinciEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -816,7 +928,7 @@ BEGIN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[YayinciSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[YayinciSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -830,19 +942,25 @@ CREATE PROCEDURE [dbo].[YayinciSil]
 	@YayinciID int
 AS
 BEGIN
+	IF EXISTS(SELECT 1 FROM Kitaplar WHERE YayinciID = @YayinciID)
+	BEGIN
+		RAISERROR('Bu Yayıncı Silinemez. Bu Yayıncıyı Silmek Veri Tutarsızlığına Neden Olabilir.', 16, 1);
+		RETURN
+	END
+
 	IF EXISTS (SELECT 1 FROM Yayincilar WHERE YayinciID = @YayinciID)
 	BEGIN
 		DELETE FROM Yayincilar WHERE YayinciID = @YayinciID
-		SELECT 'Yayıncı başarıyla silindi.' as Sonuc
 	END
 
 	ELSE
 	BEGIN
-		SELECT 'Yayıncı bulunamadı.' as Sonuc
+		RAISERROR('Yayıncı bulunamadı.', 16, 1);
+		RETURN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[YazarEkleGuncelle]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[YazarEkleGuncelle]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -872,7 +990,7 @@ BEGIN
 	END
 END
 GO
-/****** Object:  StoredProcedure [dbo].[YazarSil]    Script Date: 22.12.2024 15:42:14 ******/
+/****** Object:  StoredProcedure [dbo].[YazarSil]    Script Date: 1.01.2025 16:09:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -886,16 +1004,21 @@ CREATE PROCEDURE [dbo].[YazarSil]
 	@YazarID int
 AS
 BEGIN
+	IF EXISTS(SELECT 1 FROM Kitaplar WHERE YazarID = @YazarID)
+	BEGIN
+		RAISERROR('Bu Yazar Silinemez. Bu Yazarı Silmek Veri Tutarsızlığına Neden Olabilir.', 16, 1);
+		RETURN
+	END
 	IF EXISTS (SELECT 1 FROM Yazarlar WHERE YazarID = @YazarID)
 	BEGIN
 		DELETE FROM Yazarlar
 		WHERE YazarID = @YazarID
-		SELECT 'Yazar başarıyla silindi.' as Sonuc
 	END
 
 	ELSE
 	BEGIN
-		SELECT 'Yazar bulunamadı.' as Sonuc
+		RAISERROR('Yazar bulunamadı.', 16, 1);
+		RETURN
 	END
 END
 GO
@@ -903,5 +1026,3 @@ USE [master]
 GO
 ALTER DATABASE [KutuphaneDB] SET  READ_WRITE 
 GO
-
-INSERT INTO Kullanicilar(Adi,Soyadi,Email,Sifre) values ('Yetkili','Kullanıcı','admin','1234')

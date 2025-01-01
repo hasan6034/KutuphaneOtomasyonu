@@ -8,7 +8,6 @@ import Fonksiyonlar.Veritabani as vt
 class Yayincilar(ctk.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)
-        ctk.set_default_color_theme("green")
         gf.CenterWindow(self, 700, 700)
         self.title("Yayınevi İşlemleri")
 
@@ -21,6 +20,11 @@ class Yayincilar(ctk.CTkToplevel):
         self.grid_rowconfigure(0, weight=1)
 
     def create_widgets(self):
+        self.create_treeview()
+        self.create_form()
+        self.create_buttons()
+
+    def create_treeview(self):
         self.tw_Yayincilar = ttk.Treeview(
             self,
             columns=("YayinciID", "YayinciAdi", "Adres"),
@@ -28,41 +32,39 @@ class Yayincilar(ctk.CTkToplevel):
         )
         self.tw_Yayincilar.grid(row=0, column=0, columnspan=4, padx=2, pady=2, sticky="nsew")
 
-        self.tw_Yayincilar.heading("YayinciID", text="Yayıncı ID", anchor="center")
-        self.tw_Yayincilar.heading("YayinciAdi", text="Yayıncı Adı")
-        self.tw_Yayincilar.heading("Adres", text="Adres")
+        for col, text, width in [("YayinciID", "Yayıncı ID", 80), ("YayinciAdi", "Yayıncı Adı", 150), ("Adres", "Adres", 200)]:
+            self.tw_Yayincilar.heading(col, text=text, anchor="center")
+            self.tw_Yayincilar.column(col, width=width)
 
-        self.tw_Yayincilar.column("YayinciID", width=80)
-        self.tw_Yayincilar.column("YayinciAdi", width=150)
-        self.tw_Yayincilar.column("Adres", width=200)
-
+    def create_form(self):
         self.txtYayinciID = tk.StringVar()
         self.txtYayinciAdi = tk.StringVar()
         self.txtAdres = tk.StringVar()
 
-        alt = ctk.CTkFrame(self)
-        alt.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
-        alt.grid_columnconfigure(1, weight=1)
-        alt.grid_columnconfigure(3, weight=1)
+        form_frame = ctk.CTkFrame(self)
+        form_frame.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
+        form_frame.grid_columnconfigure(1, weight=1)
+        form_frame.grid_columnconfigure(3, weight=1)
 
-        ctk.CTkLabel(alt, text="Yayıncı ID:").grid(row=1, column=0, padx=5, pady=5, sticky="w")
-        ctk.CTkEntry(alt, width=200, state="readonly", textvariable=self.txtYayinciID).grid(row=1, column=1, padx=5, pady=5, sticky="ew")
+        for row, (label_text, var, col, colspan) in enumerate([
+            ("Yayıncı ID:", self.txtYayinciID, 1, 1),
+            ("Yayıncı Adı:", self.txtYayinciAdi, 1, 1),
+            ("Adres:", self.txtAdres, 1, 3)
+        ]):
+            ctk.CTkLabel(form_frame, text=label_text).grid(row=row, column=0, padx=5, pady=5, sticky="w")
+            ctk.CTkEntry(form_frame, width=200, textvariable=var, state="readonly" if label_text == "Yayıncı ID:" else "normal").grid(row=row, column=col, columnspan=colspan, padx=5, pady=5, sticky="ew")
 
-        ctk.CTkLabel(alt, text="Yayıncı Adı:").grid(row=1, column=2, padx=5, pady=5, sticky="w")
-        ctk.CTkEntry(alt, width=200, textvariable=self.txtYayinciAdi).grid(row=1, column=3, padx=5, pady=5, sticky="ew")
+    def create_buttons(self):
+        button_frame = ctk.CTkFrame(self)
+        button_frame.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
+        button_frame.grid_columnconfigure((0, 1, 2), weight=1)
 
-        ctk.CTkLabel(alt, text="Adres:").grid(row=2, column=0, padx=5, pady=5, sticky="w")
-        ctk.CTkEntry(alt, width=200, textvariable=self.txtAdres).grid(row=2, column=1, columnspan=3, padx=5, pady=5, sticky="ew")
-
-        butonlar = ctk.CTkFrame(self)
-        butonlar.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
-        butonlar.grid_columnconfigure(0, weight=1)
-        butonlar.grid_columnconfigure(1, weight=1)
-        butonlar.grid_columnconfigure(2, weight=1)
-
-        ctk.CTkButton(butonlar, text="Yeni Kayıt Ekle", command=self.reset_fields).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
-        ctk.CTkButton(butonlar, text="Ekle/Güncelle", command=self.save_publisher).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
-        ctk.CTkButton(butonlar, text="Sil", command=self.delete_publisher).grid(row=0, column=2, padx=5, pady=5, sticky="ew")
+        for col, (text, command) in enumerate([
+            ("Yeni Kayıt Ekle", self.reset_fields),
+            ("Ekle/Güncelle", self.save_publisher),
+            ("Sil", self.delete_publisher)
+        ]):
+            ctk.CTkButton(button_frame, text=text, command=command).grid(row=0, column=col, padx=5, pady=5, sticky="ew")
 
     def bind_events(self):
         self.tw_Yayincilar.bind("<ButtonRelease-1>", self.on_treeview_select)
@@ -81,10 +83,10 @@ class Yayincilar(ctk.CTkToplevel):
         self.txtAdres.set("")
 
     def save_publisher(self):
+        if not self.txtYayinciAdi.get() or not self.txtAdres.get():
+            mb.showwarning("Uyarı", "Lütfen tüm alanları doldurunuz!")
+            return
         try:
-            if self.txtYayinciAdi.get() == "" or self.txtAdres.get() == "":
-                mb.showwarning("Uyarı", "Lütfen tüm alanları doldurunuz!")
-                return
             vt.YayinciEkleGuncelle(
                 self.txtYayinciID.get(),
                 self.txtYayinciAdi.get(),
@@ -96,12 +98,12 @@ class Yayincilar(ctk.CTkToplevel):
             mb.showerror("Hata", f"Sayın {gf.kullaniciAdi} Yayıncı kaydedilirken hata oluştu:\n{str(e)}")
 
     def delete_publisher(self):
+        if self.txtYayinciID.get() == "-1":
+            mb.showwarning("Uyarı", "Lütfen bir yayıncı seçiniz!")
+            return
+        if not mb.askyesno("Silme Onayı", "Seçili yayıncıyı silmek istediğinizden emin misiniz?"):
+            return
         try:
-            if self.txtYayinciID.get() == "-1":
-                mb.showwarning("Uyarı", "Lütfen bir yayıncı seçiniz!")
-                return
-            if not mb.askyesno("Silme Onayı", "Seçili yayıncıyı silmek istediğinizden emin misiniz?"):
-                return
             vt.YayinciSil(self.txtYayinciID.get())
             self.list_publishers()
             self.reset_fields()

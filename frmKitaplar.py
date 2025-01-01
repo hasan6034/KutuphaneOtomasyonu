@@ -10,52 +10,46 @@ from datetime import datetime
 class Kitaplar(ctk.CTkToplevel):
     def __init__(self, master=None):
         super().__init__(master)
-        ctk.set_default_color_theme("green")
         gf.CenterWindow(self, 880, 700)
         self.title("Kitap İşlemleri")
 
-        self.dataYazar = vt.YazarListesi()
-        self.dataYazar.insert(0, (-1, "Seçiniz"))
-
-        self.dataYayinci = vt.YayinciListesi()
-        self.dataYayinci.insert(0, (-1, "Seçiniz"))
-
-        self.dataKategori = vt.KategoriListesi()
-        self.dataKategori.insert(0, (-1, "Seçiniz"))
-
-        self.displayYazar = [row[1] for row in self.dataYazar]
-        self.displayYayinci = [row[1] for row in self.dataYayinci]
-        self.displayKategori = [row[1] for row in self.dataKategori]
-
-        self.valueYazar = {row[1]: row[0] for row in self.dataYazar}
-        self.valueYayinci = {row[1]: row[0] for row in self.dataYayinci}
-        self.valueKategori = {row[1]: row[0] for row in self.dataKategori}
+        self.dataYazar = self.prepare_data(vt.YazarListesi())
+        self.dataYayinci = self.prepare_data(vt.YayinciListesi())
+        self.dataKategori = self.prepare_data(vt.KategoriListesi())
 
         self.create_widgets()
         self.Listele()
         self.YeniKayit()
 
+    def prepare_data(self, data):
+        data.insert(0, (-1, "Seçiniz"))
+        return data
+
     def create_widgets(self):
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=0)
-        self.grid_rowconfigure(2, weight=0)
+        self.configure_grid()
+        self.create_treeview()
+        self.create_form_frame()
+        self.create_buttons_frame()
+
+    def configure_grid(self):
+        for i in range(3):
+            self.grid_rowconfigure(i, weight=1 if i == 0 else 0)
         self.grid_columnconfigure(0, weight=1)
 
-        self.tw_Kitaplar = ttk.Treeview(
-            self,
-            columns=("KitapID", "KitapAdi", "YazarAdi", "YayinciAdi", "KategoriAdi", "BasimTarihi", "SayfaSayisi"),
-            show="headings",
-        )
+    def create_treeview(self):
+        columns = ("KitapID", "KitapAdi", "YazarAdi", "YayinciAdi", "KategoriAdi", "BasimTarihi", "SayfaSayisi")
+        self.tw_Kitaplar = ttk.Treeview(self, columns=columns, show="headings")
         self.tw_Kitaplar.grid(row=0, column=0, columnspan=4, padx=2, pady=2, sticky="nsew")
 
-        for col in self.tw_Kitaplar["columns"]:
+        for col in columns:
             self.tw_Kitaplar.heading(col, text=col.replace("Adi", " Adı").replace("ID", " ID"), anchor="center")
             self.tw_Kitaplar.column(col, width=130 if col != "KitapID" else 80)
 
         self.tw_Kitaplar.bind("<ButtonRelease-1>", self.TreeviewSelectedItem)
 
-        alt = ctk.CTkFrame(self)
-        alt.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
+    def create_form_frame(self):
+        form_frame = ctk.CTkFrame(self)
+        form_frame.grid(row=1, column=0, columnspan=4, padx=2, pady=2, sticky="ew")
 
         self.txtKitapID = tk.StringVar()
         self.txtKitapAdi = tk.StringVar()
@@ -65,43 +59,34 @@ class Kitaplar(ctk.CTkToplevel):
         self.txtYazarAdi = tk.StringVar()
         self.txtYayinciAdi = tk.StringVar()
 
-        self.create_form(alt)
-        self.create_buttons()
-
-    def create_form(self, parent):
-        parent.grid_columnconfigure(0, weight=1)
-        parent.grid_columnconfigure(1, weight=1)
-        parent.grid_columnconfigure(2, weight=1)
-        parent.grid_columnconfigure(3, weight=1)
-
         form_labels = ["Kitap ID:", "Kitap Adı:", "Yazar Adı:", "Yayıncı Adı:", "Kategori Adı:", "Basım Tarihi:", "Sayfa Sayısı:"]
         form_vars = [self.txtKitapID, self.txtKitapAdi, self.txtYazarAdi, self.txtYayinciAdi, self.txtKategoriAdi, self.txtBasimTarihi, self.txtSayfaSayisi]
         form_widgets = [
-            ctk.CTkEntry(parent, width=150, state="readonly", textvariable=self.txtKitapID),
-            ctk.CTkEntry(parent, width=150, textvariable=self.txtKitapAdi),
-            ctk.CTkOptionMenu(parent, width=150, variable=self.txtYazarAdi, values=self.displayYazar),
-            ctk.CTkOptionMenu(parent, width=150, variable=self.txtYayinciAdi, values=self.displayYayinci),
-            ctk.CTkOptionMenu(parent, width=150, variable=self.txtKategoriAdi, values=self.displayKategori),
-            tkcal.DateEntry(parent, width=20, textvariable=self.txtBasimTarihi, date_pattern='yyyy-mm-dd'),
-            ctk.CTkEntry(parent, width=150, textvariable=self.txtSayfaSayisi)
+            ctk.CTkEntry(form_frame, width=150, state="readonly", textvariable=self.txtKitapID),
+            ctk.CTkEntry(form_frame, width=150, textvariable=self.txtKitapAdi),
+            ctk.CTkOptionMenu(form_frame, width=150, variable=self.txtYazarAdi, values=[row[1] for row in self.dataYazar]),
+            ctk.CTkOptionMenu(form_frame, width=150, variable=self.txtYayinciAdi, values=[row[1] for row in self.dataYayinci]),
+            ctk.CTkOptionMenu(form_frame, width=150, variable=self.txtKategoriAdi, values=[row[1] for row in self.dataKategori]),
+            tkcal.DateEntry(form_frame, width=20, textvariable=self.txtBasimTarihi, date_pattern='yyyy-mm-dd'),
+            ctk.CTkEntry(form_frame, width=150, textvariable=self.txtSayfaSayisi)
         ]
 
         for i, (label, widget) in enumerate(zip(form_labels, form_widgets)):
-            ctk.CTkLabel(parent, text=label).grid(row=i // 2 + 1, column=(i % 2) * 2, padx=5, pady=5, sticky="w")
+            ctk.CTkLabel(form_frame, text=label).grid(row=i // 2 + 1, column=(i % 2) * 2, padx=5, pady=5, sticky="w")
             widget.grid(row=i // 2 + 1, column=(i % 2) * 2 + 1, padx=5, pady=5, sticky="w")
 
-    def create_buttons(self):
-        butonlar = ctk.CTkFrame(self)
-        butonlar.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
+    def create_buttons_frame(self):
+        buttons_frame = ctk.CTkFrame(self)
+        buttons_frame.grid(row=2, column=0, columnspan=4, padx=10, pady=10, sticky="ew")
 
-        btnYeniKayit = ctk.CTkButton(butonlar, text="Yeni Kayıt Ekle", command=self.YeniKayit)
-        btnYeniKayit.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        buttons = [
+            ("Yeni Kayıt Ekle", self.YeniKayit),
+            ("Ekle/Güncelle", self.Kaydet),
+            ("Sil", self.Sil)
+        ]
 
-        btnEkle = ctk.CTkButton(butonlar, text="Ekle/Güncelle", command=self.Kaydet)
-        btnEkle.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-
-        btnSil = ctk.CTkButton(butonlar, text="Sil", command=self.Sil)
-        btnSil.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+        for i, (text, command) in enumerate(buttons):
+            ctk.CTkButton(buttons_frame, text=text, command=command).grid(row=0, column=i, padx=5, pady=5, sticky="w")
 
     def Listele(self):
         try:
@@ -128,9 +113,9 @@ class Kitaplar(ctk.CTkToplevel):
             vt.KitapEkleGuncelle(
                 self.txtKitapID.get(),
                 self.txtKitapAdi.get(),
-                self.valueYazar.get(self.txtYazarAdi.get()),
-                self.valueYayinci.get(self.txtYayinciAdi.get()),
-                self.valueKategori.get(self.txtKategoriAdi.get()),
+                self.get_value(self.txtYazarAdi.get(), self.dataYazar),
+                self.get_value(self.txtYayinciAdi.get(), self.dataYayinci),
+                self.get_value(self.txtKategoriAdi.get(), self.dataKategori),
                 self.txtBasimTarihi.get(),
                 self.txtSayfaSayisi.get()
             )
@@ -138,6 +123,9 @@ class Kitaplar(ctk.CTkToplevel):
             self.YeniKayit()
         except Exception as e:
             mb.showerror("Hata", f"Sayın {gf.kullaniciAdi} Kayıt sırasında hata oluştu:\n{str(e)}")
+
+    def get_value(self, key, data):
+        return next((row[0] for row in data if row[1] == key), -1)
 
     def Sil(self):
         try:

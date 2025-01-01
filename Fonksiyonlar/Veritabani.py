@@ -22,7 +22,7 @@ KITAP_EKLE_GUNCELLE = "exec KitapEkleGuncelle @KitapID = ?, @KitapAdi = ?, @Yaza
 KATEGORI_EKLE_GUNCELLE = "exec KategoriEkleGuncelle @KategoriID = ?, @KategoriAdi = ?"
 KULLANICI_EKLE_GUNCELLE = "exec KullaniciEkleGuncelle @KullaniciID = ?, @Adi = ?, @Soyadi = ?, @Email = ?, @Sifre = ?"
 ODUNC_EKLE_GUNCELLE = "exec OduncEkleGuncelle @IslemID = ?, @UyeID = ?, @KitapID = ?, @KullaniciID = ?, @OduncTarihi = ?, @IadeTarihi = ?, @AlindiMi = ?"
-UYE_EKLE_GUNCELLE = "exec UyeEkleGuncelle @UyeID = ?, @Adi = ?, @Telefon = ?, @Adres = ?, @KayitTarihi = ?"
+UYE_EKLE_GUNCELLE = "exec UyeEkleGuncelle @UyeID = ?, @UyeAdi = ?, @Telefon = ?, @Adres = ?, @KayitTarihi = ?"
 YAYINCI_EKLE_GUNCELLE = "exec YayinciEkleGuncelle @YayinciID = ?, @YayinciAdi = ?, @Adres = ?"
 YAZAR_EKLE_GUNCELLE = "exec YazarEkleGuncelle @YazarID = ?, @YazarAdi = ?, @DogumTarihi = ?"
 
@@ -43,7 +43,9 @@ def Login(email, sifre):
     if cursor.rowcount == 0:
         return False
     else:
-        gf.kullaniciAdi = cursor.fetchall()[0][0]
+        row = cursor.fetchone()
+        gf.kullaniciAdi = row[0]
+        gf.kullaniciID = row[1]
         return True
 
 def KategoriListesi():

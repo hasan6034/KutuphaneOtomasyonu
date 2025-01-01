@@ -9,6 +9,7 @@ def CenterWindow(root, width, height):
 
 
 kullaniciAdi = ""
+kullaniciID = 0
 
 
 def PopulateTreeview(tree, data):
